@@ -15,7 +15,7 @@ app = Flask(__name__)
 
 
 def get_kafka_client():
-    c = Consumer({'bootstrap.servers': 'kafka:9092', 'group.id': 'twitter.streaming', 'default.topic.config': {'auto.offset.reset': 'smallest'}})
+    c = Consumer({'bootstrap.servers': 'kafka:9092', 'group.id': 'twitter.streaming', 'default.topic.config': {'auto.offset.reset': 'largest'}})
     c.subscribe(['Twitter.processed'])
     return c
 
