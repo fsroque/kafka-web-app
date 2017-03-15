@@ -25,7 +25,7 @@ RUN apt-get install -y nginx supervisor
 WORKDIR /tmp
 RUN git clone https://github.com/edenhill/librdkafka.git
 WORKDIR /tmp/librdkafka
-RUN ./configure && make && make install
+RUN ./configure && make && make install && ldconfig
 
 RUN service supervisor stop
 
