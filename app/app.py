@@ -14,6 +14,12 @@ import json
 app = Flask(__name__)
 
 
+@app.after_request
+def add_header(response):
+    response.cache_control.no_cache = True
+    return response
+
+
 def get_kafka_client():
     c = Consumer({'bootstrap.servers': 'kafka:9092', 'group.id': 'twitter.streaming', 'default.topic.config': {'auto.offset.reset': 'largest'}})
     c.subscribe(['Twitter.processed'])
