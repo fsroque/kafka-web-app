@@ -1,7 +1,9 @@
 FROM ubuntu:16.04
 MAINTAINER Francisco Roque <francisco.roque@sonat.no>
 
-# keep upstart quiet
+######################################### base part
+
+# keep upstart quiet - 1
 RUN dpkg-divert --local --rename --add /sbin/initctl
 RUN ln -sf /bin/true /sbin/initctl
 
@@ -9,11 +11,12 @@ RUN ln -sf /bin/true /sbin/initctl
 ENV DEBIAN_FRONTEND noninteractive
 
 # get up to date
-RUN apt-key update &&  \
-    apt-get update && \
-    apt-get install -y --allow-unauthenticated --no-install-recommends gnupg build-essential git python3 python3-dev python3-pip nginx supervisor python-setuptools && \
-    apt-get remove -y --allow-unauthenticated python-pip curl gnupg && \
-    rm -rf /var/lib/apt/lists/* 
+RUN apt-get update --fix-missing
+
+# global installs [applies to all envs!]
+RUN apt-get install -y build-essential git
+RUN apt-get install -y python3 python3-dev python3-setuptools
+RUN apt-get install -y python3-pip
 
 WORKDIR /tmp
 RUN git clone https://github.com/edenhill/librdkafka.git
@@ -30,9 +33,6 @@ RUN /opt/venv/bin/pip install -r /opt/venv/requirements.txt
 
 # expose port(s)
 EXPOSE 80
-
-ENV PYTHONUNBUFFERED TRUE
-ENV PYTHONHASHSEED 0
 
 WORKDIR /opt/app
 ADD app/ .
