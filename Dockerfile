@@ -20,7 +20,7 @@ RUN apt-get install -y python3 python3-dev python3-setuptools
 RUN apt-get install -y python3-pip
 
 RUN apt-get install -y python-setuptools 
-RUN apt-get install -y nginx supervisor
+RUN apt-get install -y supervisor
 
 WORKDIR /tmp
 RUN git clone https://github.com/edenhill/librdkafka.git
@@ -41,7 +41,6 @@ EXPOSE 80
 WORKDIR /opt/app
 ADD app/ .
 
-
 # install the modified supervisor_stdout
 COPY supervisor_stdout /tmp/supervisor_stdout
 RUN cd /tmp/supervisor_stdout && python setup.py install
@@ -49,10 +48,6 @@ RUN cd /tmp/supervisor_stdout && python setup.py install
 # file management, everything after an ADD is uncached, so we do it as late as
 # possible in the process.
 ADD supervisord.conf /etc/supervisord.conf
-ADD nginx.conf /etc/nginx/nginx.conf
-
-# restart nginx to load the config
-RUN service nginx stop
 
 # Start supervisor
 CMD supervisord -c /etc/supervisord.conf -n
