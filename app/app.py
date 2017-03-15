@@ -9,6 +9,7 @@ from flask import redirect
 from flask import url_for
 
 from confluent_kafka import Consumer, KafkaError
+import json
 
 app = Flask(__name__)
 
@@ -28,7 +29,8 @@ def streamed_response():
             while running:
                 msg = client.poll()
                 if not msg.error():
-                    yield 'data: {0}\n\n'.format(msg.value().decode('utf-8'))
+                    message = json.loads(msg.value().decode('utf-8'))
+                    yield 'data: {0}\n\n'.format(message['tweet'])
                 elif msg.error().code() != KafkaError._PARTITION_EOF:
                     yield msg.error()
                     running = False
